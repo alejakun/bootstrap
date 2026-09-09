@@ -68,7 +68,7 @@ Readdle.Spark
 # una ventana.
 Telegram.TelegramDesktop
 
-# Los dos siguientes vienen de MICROSOFT STORE, no del catalogo winget, y por eso
+# Los tres siguientes vienen de MICROSOFT STORE, no del catalogo winget, y por eso
 # su id es un Store Product ID en vez de Publisher.Package.
 #
 # Verificado el 2026-09-02 en una maquina real, que era la duda: `winget list
@@ -80,6 +80,13 @@ Telegram.TelegramDesktop
 # user-scoped. Es el comportamiento correcto, no un fallo.
 9NKSQGP7F2NH   # WhatsApp
 9P0KN9S5RP86   # Fantastical (Flexibits)
+
+# Apple Devices es el sucesor de iTunes para lo que iTunes hacia como gestor:
+# respaldar, restaurar, actualizar y sincronizar iPhone y iPad desde Windows. Se
+# publica SOLO por Microsoft Store; en el catalogo winget hay paquetes de Apple
+# -Apple.iTunes, Apple.AppleMobileDeviceSupport- que no son esta aplicacion.
+# Id verificado el 2026-09-09 contra apps.microsoft.com/detail/9np83lwlpz9k.
+9NP83LWLPZ9K   # Apple Devices
 
 # Media
 # La contraparte de iina en la Mac: iina es un frontend de mpv, y mpv.net es el
