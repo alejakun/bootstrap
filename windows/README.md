@@ -25,13 +25,18 @@ iwr -useb https://raw.githubusercontent.com/alejakun/bootstrap/master/windows/bo
 
 **base** (adds passwords, calls and media):
 ```powershell
-iwr -useb https://raw.githubusercontent.com/alejakun/bootstrap/master/windows/bootstrap-base.ps1 | iex
+$env:DOTFILES_PROFILE="base"; iwr -useb https://raw.githubusercontent.com/alejakun/bootstrap/master/windows/bootstrap.ps1 | iex
 ```
 
 **pro** (your own machine — browsers, editors, terminals):
 ```powershell
-iwr -useb https://raw.githubusercontent.com/alejakun/bootstrap/master/windows/bootstrap-pro.ps1 | iex
+$env:DOTFILES_PROFILE="pro"; iwr -useb https://raw.githubusercontent.com/alejakun/bootstrap/master/windows/bootstrap.ps1 | iex
 ```
+
+There is **one** remote script and the profile travels in `DOTFILES_PROFILE`.
+The per-profile wrappers were removed: three files that differed by one line each
+was three chances for them to disagree, and the one-liner is no longer than the
+env var it replaced.
 
 Each run also **asks** about the optional groups that apply. See
 [Optional groups](#-optional-groups).
@@ -44,11 +49,6 @@ Swap the profile name in these for whichever level you want.
 Needs neither git nor elevation:
 ```powershell
 $env:DOTFILES_PROFILE="pro"; $env:DOTFILES_DRYRUN="1"; iwr -useb https://raw.githubusercontent.com/alejakun/bootstrap/master/windows/bootstrap.ps1 | iex
-```
-
-**Any profile without its own URL**, if you would rather use one address:
-```powershell
-$env:DOTFILES_PROFILE="pro"; iwr -useb https://raw.githubusercontent.com/alejakun/bootstrap/master/windows/bootstrap.ps1 | iex
 ```
 
 **Test a branch before merging it:**
@@ -75,7 +75,13 @@ from either README alone, which is why it is written down here.
 | 2 | Reboot, if step 1 asked for one | — | — |
 | 3 | `install-packages.ps1` (or a bootstrap one-liner) | this repo | Optional |
 | 4 | `get-dotfiles.ps1` | this repo | No |
-| 5 | For WSL: install a distro, then `wsl-setup.sh`, then `hosts/debian/install.sh` | dotfiles | No |
+| 5 | For WSL: `wsl --install -d Debian`, then `hosts/windows/wsl/install` ¹ | dotfiles | No |
+
+¹ That one script provisions WSL end to end: /mnt/c metadata, packages, the
+Bitwarden agent bridge and `hosts/debian/install`. On a fresh machine it takes
+**two passes** — enabling the /mnt/c metadata needs a `wsl --shutdown`, so the
+first pass stops there (exit code 10) rather than linking an SSH config that
+OpenSSH would refuse. Re-run the same command after restarting WSL.
 
 **Step 4 registers this machine's SSH key before it clones, and that order is the
 whole point.** The dotfiles repo is private, so cloning it needs credentials.
@@ -164,7 +170,7 @@ It needs PowerShell 7 and the `pro` profile, which is where `Git.Git` and
 |---|---|---|---|
 | `mini` | 5 | 5 | A machine you hand to someone else |
 | `base` | +6 | 11 | Everyday family use |
-| `pro` | +20 | 31 | Your own machine |
+| `pro` | +24 | 35 | Your own machine |
 
 ### 🏠 mini — 5
 Chrome · Firefox · Adobe Acrobat Reader · 7-Zip · Microsoft Office
@@ -175,10 +181,11 @@ Bitwarden · Rambox · Zoom · Doxie Scanner · ShareX · VLC
 QuickLook is in the file but commented out while PowerToys' Peek is being tried
 in its place — the two do the same job, and Peek needs no extra package.
 
-### 💼 pro — +23
+### 💼 pro — +24
 Dropbox · Brave · Zen Browser · OpenSSH 10 · Git · GitHub CLI · VSCode · Windows Terminal ·
 WezTerm · Rio · PowerToys · Tailscale · Claude · Claude Code · Sublime Text 4 ·
-Spark · mpv.net · Telegram · WhatsApp · Fantastical · **PowerShell 7** · **Starship** · **JetBrains Mono Nerd Font**
+Spark · mpv.net · Telegram · WhatsApp · Fantastical · Apple Devices ·
+**PowerShell 7** · **Starship** · **JetBrains Mono Nerd Font**
 
 The last three are the shell environment. Windows ships PowerShell 5.1 and keeps
 it; 7 installs alongside as `pwsh`. Starship reads the same `starship.toml` you
@@ -520,10 +527,11 @@ aws --version
 ```
 bootstrap/windows/
 ├── prepare-machine.ps1           # Run ONCE, elevated, before anything else
-├── bootstrap.ps1                 # Remote installer + mini one-liner
-├── bootstrap-base.ps1            # One-liner: base
-├── bootstrap-pro.ps1             # One-liner: pro
-├── install-packages.ps1                   # Main installation script
+├── bootstrap.ps1                 # Remote installer. The profile travels in
+│                                 # DOTFILES_PROFILE; there are no per-profile
+│                                 # wrappers
+├── get-dotfiles.ps1              # Registers this machine's key, clones dotfiles
+├── install-packages.ps1          # Main installation script
 ├── winget/
 │   ├── packages-mini.txt         # The ladder. Each file holds only its own
 │   ├── packages-base.txt         # layer; install-packages.ps1 merges every level
@@ -578,4 +586,4 @@ Personal project - no license specified.
 
 ---
 
-**Last updated:** 2026-08-28
+**Last updated:** 2026-09-09
