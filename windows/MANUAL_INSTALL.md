@@ -245,6 +245,34 @@ use requires a paid license.
 
 ---
 
+## Sublime Text 4 — only the GUI launcher
+
+`SublimeHQ.SublimeText.4` **is** in the `pro` profile and does install, so this
+section is not about getting Sublime — it is about the one thing winget cannot
+give you.
+
+That package ships the **portable** variant: a `.zip` plus command-line aliases.
+You get `subl` and `sublime_text` on PATH, which is what most of the day needs.
+You do **not** get a Start menu entry, a Programs and Features entry, or file
+associations.
+
+It is not a configuration mistake. Verified 2026-09-10 with `winget search
+sublime`: Sublime Merge and Sublime Text 3 publish both variants as separate ids
+(`X` and `X.Portable`); Sublime Text 4 publishes only one, and it is the portable
+one. There is no id in the catalogue that installs it any other way.
+
+If you want the launcher, install it from the vendor instead:
+
+1. Download the Windows installer from <https://www.sublimetext.com/download>
+2. Run it — it creates the Start menu entry and the file associations
+3. Optionally remove the winget copy so there are not two:
+   `winget uninstall --id SublimeHQ.SublimeText.4 --exact`
+
+Removing the winget copy also removes `subl` from PATH. The vendor installer adds
+its own directory instead, so check `Get-Command subl` afterwards.
+
+---
+
 ## Verification Commands
 
 ### Check if package is available

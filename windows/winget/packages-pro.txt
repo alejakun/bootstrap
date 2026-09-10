@@ -61,6 +61,17 @@ Anthropic.ClaudeCode
 # para lo que en Windows abres y cierras -- un log, un .reg, un pegote de XML.
 # El id de Notepad++ lleva el '+' duplicado porque publisher y paquete se llaman
 # igual; se verifico contra el manifiesto del catalogo, no contra un agregador.
+#
+# OJO con Sublime Text 4: este paquete instala la variante PORTABLE. Descarga un
+# .zip y registra alias de linea de comandos -- `subl` y `sublime_text` quedan en
+# el PATH -- pero NO crea acceso directo en el menu de inicio ni entrada en
+# Programas y caracteristicas.
+#
+# No es evitable desde aqui. Verificado el 2026-09-10 con `winget search sublime`:
+# Sublime Merge y Sublime Text 3 publican las dos variantes como ids separados
+# (X y X.Portable); ST4 solo publica una, y es la portable. Se conserva igual
+# porque el valor principal es tener `subl` en el PATH de cada maquina. Quien
+# quiera el lanzador grafico, ver MANUAL_INSTALL.md.
 SublimeHQ.SublimeText.4
 Notepad++.Notepad++
 

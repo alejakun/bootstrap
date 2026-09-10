@@ -361,6 +361,30 @@ machine-wide installer and when its manifest just declares no scope, where the
 install may be machine-wide anyway. `Get-Command <exe> | Select-Object Source`
 settles it: a path under Program Files is machine-wide, one under AppData is not.
 
+**A third case, and the one that misleads.** Some packages ship a **portable**
+installer: winget downloads a `.zip`, unpacks it and registers command aliases.
+You get the commands on PATH and **no Start menu entry, no Programs and Features
+entry**. `winget list` still reports it installed, with a real version and
+`winget` as the source, so `Test-PackageInstalled` — and the summary — call it
+done. Found 2026-09-10 with `SublimeHQ.SublimeText.4`.
+
+Scope does not control this: that install succeeded **with** `--scope machine`
+and was still portable. Scope and installer type are different axes, and this
+script only sets the first.
+
+Two signals give it away: the name in `winget list` ends in `(Portable)`, or the
+install output downloads a `.zip` and prints *"Command line alias added"*.
+
+To know **before** installing:
+
+```powershell
+winget show --id <PackageId>
+```
+
+Its *Installer* section names the type. Worth a look when adding any package to
+these lists — `Notepad++.Notepad++` has [an open issue](https://github.com/microsoft/winget-pkgs/issues/296850)
+reporting the same behaviour.
+
 To give the other person those, log into their account and run **the same line
 you ran the first time**. Seeing it is not elevated, the script explains the
 situation and asks whether to continue; answer yes and it installs what does not
