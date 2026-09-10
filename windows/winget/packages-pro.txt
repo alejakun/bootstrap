@@ -56,7 +56,13 @@ Anthropic.Claude
 Anthropic.ClaudeCode
 
 # Code Editors
+#
+# Los dos conviven a proposito: Sublime para editar y navegar codigo, Notepad++
+# para lo que en Windows abres y cierras -- un log, un .reg, un pegote de XML.
+# El id de Notepad++ lleva el '+' duplicado porque publisher y paquete se llaman
+# igual; se verifico contra el manifiesto del catalogo, no contra un agregador.
 SublimeHQ.SublimeText.4
+Notepad++.Notepad++
 
 # Mail
 Readdle.Spark
