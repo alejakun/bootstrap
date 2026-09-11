@@ -563,6 +563,30 @@ gcloud --version
 aws --version
 ```
 
+### Language convention
+
+This repository and [`alejakun/dotfiles`](https://github.com/alejakun/dotfiles)
+are complementary — one installs the machine, the other configures it — and they
+share a criterion. It is not a preference but **who reads it**:
+
+> **The product in English. The reasoning about it, in Spanish.**
+
+Output and identifiers are English in both: anyone who runs or opens them reads
+those. Comments, commit messages and documentation are the author's reasoning,
+and there the criterion looks at the audience — which is where the two
+repositories legitimately part ways:
+
+| | dotfiles | bootstrap |
+|---|---|---|
+| Output, identifiers | English | English |
+| Comments, docs | **Spanish** | **English** |
+
+`dotfiles` is the author's own configuration and its comments are his reasoning.
+This repository is the public entry point: the one-liner people run, read and
+fork. The same criterion, a different audience, a different answer.
+
+The full version lives in the `dotfiles` README, under **Convención de idioma**.
+
 ---
 
 ## 📁 Structure

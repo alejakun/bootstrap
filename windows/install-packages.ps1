@@ -321,7 +321,7 @@ foreach ($name in $OptionalGroupNames) {
     # maquina familiar.
     $offerIndex = $ProfileLadder.IndexOf($group.Offer)
     if ($offerIndex -lt 0) {
-        Write-Warn "Grupo '$name': 'Offer: $($group.Offer)' no es un perfil valido, se omite"
+        Write-Warn "Group '$name': 'Offer: $($group.Offer)' is not a valid profile, skipping"
         Write-Host "  Perfiles validos: $($ProfileLadder -join ', ')" -ForegroundColor Gray
         continue
     }
