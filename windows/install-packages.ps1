@@ -73,6 +73,22 @@ $PresenceOverrides = @{
     }
 }
 
+# Microsoft Store product ids are twelve characters of uppercase letters and
+# digits with no dot; winget ids are Publisher.Package and always carry one.
+# Checked against the catalogues on 2026-09-11: the pattern matches the three
+# Store entries and nothing else among the declared packages.
+#
+# This exists because a Store package that fails for want of a signed-in account
+# fails like any other package - winget reaches the catalogue without one, so the
+# id resolves and the install starts. Only the download fails, and its error
+# never mentions an account. Without telling the two apart, the summary sends you
+# looking for a network or manifest problem that is not there.
+function Test-IsStoreId {
+    param([string]$PackageId)
+
+    return $PackageId -cmatch '^[0-9A-Z]{12}$'
+}
+
 # Single source of truth for "is this already here", used by both the preview and
 # the installer so they can never disagree
 function Test-PackageInstalled {
@@ -580,6 +596,27 @@ if ($failed -gt 0) {
     }
     Write-Host ""
     Write-Host "See MANUAL_INSTALL.md for manual installation instructions" -ForegroundColor Yellow
+}
+
+# Store packages land in either bucket above: unelevated they look like "no
+# per-user installer", elevated like a plain failure. Neither names the cause,
+# so they are gathered here once.
+$storeTrouble = @(($failedPackages + $needsElevationPackages) | Where-Object { Test-IsStoreId $_ })
+
+if ($storeTrouble.Count -gt 0) {
+    Write-Warn "Microsoft Store packages that did not install:"
+    $storeTrouble | ForEach-Object {
+        Write-Host "  - $_" -ForegroundColor Yellow
+    }
+    Write-Host ""
+    Write-Host "The Store needs a signed-in account, and winget does not say so: it" -ForegroundColor Gray
+    Write-Host "reaches the catalogue without one, so the id resolves and the install" -ForegroundColor Gray
+    Write-Host "begins. Only the download fails." -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "Open the Store app, sign in, and run this script again." -ForegroundColor Gray
+    Write-Host "Store ids are opaque on purpose - their names are in the comment next" -ForegroundColor Gray
+    Write-Host "to each id in windows/winget/packages-*.txt" -ForegroundColor Gray
+    Write-Host ""
 }
 
 # NPM Package Installation

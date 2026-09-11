@@ -517,6 +517,25 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 3. **Try manual installation:**
    See [MANUAL_INSTALL.md](MANUAL_INSTALL.md)
 
+### Microsoft Store packages fail
+
+Three packages come from the Store rather than the winget repository, and they
+are the ones whose id is twelve characters instead of `Publisher.Package`:
+
+| Id | Package |
+|---|---|
+| `9NKSQGP7F2NH` | WhatsApp |
+| `9P0KN9S5RP86` | Fantastical |
+| `9NP83LWLPZ9K` | Apple Devices |
+
+**The Store needs a signed-in account, and the error never says so.** winget
+reaches the Store catalogue without one, so the id resolves and the install
+begins — only the download fails, which sends you looking for a network or
+manifest problem that is not there.
+
+Open the Store app, sign in, and run the installer again. The summary at the end
+of `install-packages.ps1` lists these separately for the same reason.
+
 ---
 
 ## 📝 Notes
