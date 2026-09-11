@@ -456,6 +456,41 @@ if ($DryRun) {
 }
 
 # Installation
+# Store packages need a signed-in account, and winget never says so: it reaches
+# the Store catalogue without one, so the id resolves and the install begins -
+# only the download fails. Warning beforehand costs one keypress; finding out
+# afterwards costs a second full run.
+#
+# Conditional on purpose, and twice over: the Store ids live in the pro profile
+# only, so a mini or base run never sees this, and the ones already installed
+# are filtered out, so a re-run of pro does not ask again either. A prompt that
+# fires every time is a prompt nobody reads.
+#
+# (The macOS installer carries the same guard unconditionally. There the
+# Brewfile declares 26 App Store entries, so the condition would never be
+# false and the check would be dead code.)
+$storePending = @($packages | Where-Object {
+    (Test-IsStoreId $_) -and -not (Test-PackageInstalled -PackageId $_)
+})
+
+if ($storePending.Count -gt 0) {
+    Write-Host ""
+    Write-Warn "This run installs $($storePending.Count) package(s) from the Microsoft Store:"
+    $storePending | ForEach-Object {
+        Write-Host "  - $_" -ForegroundColor Yellow
+    }
+    Write-Host ""
+    Write-Host "The Store needs a signed-in account. Sign in from the Store app first," -ForegroundColor Gray
+    Write-Host "or these fail with an error that never mentions an account." -ForegroundColor Gray
+    Write-Host ""
+
+    # Without a console there is nobody to answer: asking would hang the run.
+    if ([Environment]::UserInteractive) {
+        Read-Host "Press Enter once you are signed in to the Microsoft Store" | Out-Null
+        Write-Host ""
+    }
+}
+
 Write-Step "Starting installation..."
 Write-Host ""
 
