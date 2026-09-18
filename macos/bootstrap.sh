@@ -195,10 +195,23 @@ fi
 # 7. Clonar dotfiles y entregar el control
 # ============================================================================
 
-print_step "Clonando dotfiles..."
+print_step "Clonando o actualizando dotfiles..."
 
 if [[ -d "$DOTFILES_DIR" ]]; then
-    print_info "$DOTFILES_DIR ya existe; se conserva y se salta el clon"
+    # Existe de una corrida anterior: se ACTUALIZA, no se conserva tal cual. Antes
+    # se saltaba el clon sin mas, asi que un re-run del one-liner corria con el
+    # codigo viejo -- justo lo que dejo el fix de install.sh sin aplicar el
+    # 2026-09-18 y obligo a un git pull manual. --ff-only falla limpio si la rama
+    # local diverge, en vez de armar un merge a ciegas.
+    print_info "$DOTFILES_DIR ya existe; actualizando en vez de clonar"
+    if git -C "$DOTFILES_DIR" pull --ff-only \
+       && git -C "$DOTFILES_DIR" submodule update --init --recursive; then
+        print_success "Dotfiles actualizados en $DOTFILES_DIR"
+    else
+        print_error "No se pudo actualizar $DOTFILES_DIR (¿cambios locales o rama divergida?)"
+        print_info  "Revisa 'git -C $DOTFILES_DIR status' y reintenta"
+        exit 1
+    fi
 else
     git clone --recurse-submodules \
         "git@github.com:${GH_USER}/dotfiles.git" "$DOTFILES_DIR"
