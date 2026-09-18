@@ -49,7 +49,7 @@ print_header "🚀 Dotfiles Bootstrap"
 if [[ "$OSTYPE" != "darwin"* ]]; then
     print_error "Este script solo funciona en macOS"
     print_info "Para los demás hosts usa el instalador que les corresponde:"
-    print_info "  hosts/debian/install.sh, hosts/synology/install.sh"
+    print_info "  hosts/debian/install, hosts/synology/install"
     exit 1
 fi
 
@@ -207,10 +207,10 @@ fi
 
 cd "$DOTFILES_DIR"
 
-# install.sh en la raiz detecta el host y delega en hosts/darwin/install.sh.
+# install en la raiz detecta el host y delega en hosts/macos/install.
 # Antes del 2026-09-05 el instalador de macOS era el de la raiz, en bin/.
-if [[ ! -f "install.sh" ]]; then
-    print_error "No se encontró install.sh en $DOTFILES_DIR"
+if [[ ! -f "install" ]]; then
+    print_error "No se encontró install en $DOTFILES_DIR"
     exit 1
 fi
 
@@ -219,4 +219,4 @@ print_info "A partir de aquí manda el instalador del repositorio."
 print_info "Sus logs quedan en ~/.dotfiles-install-logs/"
 echo ""
 
-exec bash install.sh --all
+exec bash install --all
