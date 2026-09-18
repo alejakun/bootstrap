@@ -64,25 +64,33 @@ print_success "macOS $(sw_vers -productVersion)"
 
 print_step "Verificando Homebrew..."
 
-if command -v brew &>/dev/null; then
-    print_success "Homebrew ya instalado"
-else
-    print_info "Instalando Homebrew (incluye las Xcode Command Line Tools)..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-    # Apple Silicon instala en /opt/homebrew, que no está en el PATH todavía.
+# Se distingue "no está en el PATH" de "no está instalado". En Apple Silicon brew
+# vive en /opt/homebrew, fuera del PATH por defecto; una terminal que no lo cargó
+# hace fallar `command -v brew` aunque esté instalado. En ese caso basta shellenv,
+# NO reinstalar -- reinstalar re-lanzaba el instalador de Homebrew en cada re-run.
+# Y poner brew en el PATH aquí es lo que hace que el instalador entregado (y sus
+# subshells de módulo) lo hereden, sin depender de la terminal de origen.
+if ! command -v brew &>/dev/null; then
     if [[ -x /opt/homebrew/bin/brew ]]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
     elif [[ -x /usr/local/bin/brew ]]; then
         eval "$(/usr/local/bin/brew shellenv)"
+    else
+        print_info "Instalando Homebrew (incluye las Xcode Command Line Tools)..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        if [[ -x /opt/homebrew/bin/brew ]]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        elif [[ -x /usr/local/bin/brew ]]; then
+            eval "$(/usr/local/bin/brew shellenv)"
+        fi
     fi
 
     if ! command -v brew &>/dev/null; then
         print_error "Homebrew no quedó en el PATH"
         exit 1
     fi
-    print_success "Homebrew instalado"
 fi
+print_success "Homebrew disponible"
 
 # ============================================================================
 # 3. GitHub CLI
