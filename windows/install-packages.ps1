@@ -209,7 +209,7 @@ if ($Help) {
     Write-Host "         Earth Pro, 7-Zip, TeamViewer, AnyDesk"
     Write-Host "  base - + Bitwarden, Rambox, Zoom, Doxie, QuickLook, ShareX, VLC"
     Write-Host "  pro  - + Dropbox, Brave, Zen, Git, VSCode, terminals, Tailscale,"
-    Write-Host "         Claude, Claude Code, Sublime Text, Spark"
+    Write-Host "         Claude, Claude Code, Sublime Text, eM Client"
     Write-Host ""
     Write-Host "OPTIONAL GROUPS:" -ForegroundColor Yellow
     Write-Host "  Asked at run time, outside the ladder. Whether you want them is a"
