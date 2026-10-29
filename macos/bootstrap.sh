@@ -176,9 +176,14 @@ fi
 
 print_step "Registrando la llave en GitHub..."
 
-key_fingerprint=$(ssh-keygen -lf "${KEY}.pub" | awk '{print $2}')
+# Se compara el material de la llave (2º campo del .pub), no su fingerprint:
+# `gh ssh-key list` imprime la llave, no el SHA256, así que buscar el
+# fingerprint nunca coincidía y cada re-run "registraba" de nuevo. No rompía
+# -gh responde rc=0 a una llave duplicada- pero el mensaje mentía. Comprobado
+# el 2026-10-29 en la Mac.
+key_material=$(awk '{print $2}' "${KEY}.pub")
 
-if gh ssh-key list 2>/dev/null | grep -q "$key_fingerprint"; then
+if gh ssh-key list 2>/dev/null | grep -qF "$key_material"; then
     print_success "La llave ya estaba registrada"
 else
     title="$(scutil --get ComputerName 2>/dev/null || hostname)"
@@ -237,7 +242,7 @@ fi
 
 print_header "📦 Instalación"
 print_info "A partir de aquí manda el instalador del repositorio."
-print_info "Sus logs quedan en ~/.dotfiles-install-logs/"
+print_info "Sus logs quedan en ~/.dotfiles-logs/"
 echo ""
 
 exec bash install --all
