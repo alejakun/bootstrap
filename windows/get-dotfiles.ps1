@@ -242,10 +242,15 @@ Write-Step "Registering the key on GitHub..."
 if ($DryRun -and -not (Test-Path $key)) {
     Write-Warn "Would register the new key as '$env:COMPUTERNAME'"
 } else {
-    $fingerprint = ((& ssh-keygen -lf "$key.pub") -split '\s+')[1]
+    # Compare the key material (2nd field of the .pub), not its fingerprint:
+    # `gh ssh-key list` prints the key, not the SHA256, so the fingerprint never
+    # matched and every re-run "registered" again (and -DryRun announced it).
+    # Harmless -gh returns 0 for a duplicate key- but the report lied. Found on
+    # the Mac copy on 2026-10-29.
+    $keyMaterial = ((Get-Content "$key.pub" -Raw).Trim() -split '\s+')[1]
     $known = Invoke-Native "gh" @("ssh-key", "list")
 
-    if ($known.ExitCode -eq 0 -and $known.Output -match [regex]::Escape($fingerprint)) {
+    if ($known.ExitCode -eq 0 -and $known.Output -match [regex]::Escape($keyMaterial)) {
         Write-Success "The key was already registered"
     } elseif ($DryRun) {
         Write-Warn "Would register the key as '$env:COMPUTERNAME'"

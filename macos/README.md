@@ -64,7 +64,7 @@ Todo esto vive en `dotfiles` y duplicarlo aquí solo crea deriva:
 |---|---|
 | Instalar paquetes | `brew/Brewfile` |
 | Configurar git | `git/.gitconfig` y `git/macos.gitconfig.local` |
-| Logging y reportes | El instalador ya escribe a `~/.dotfiles-install-logs/` |
+| Logging y reportes | El instalador ya escribe a `~/.dotfiles-logs/` |
 | Xcode CLI Tools explícitas | El instalador de Homebrew las instala solo |
 
 La única duplicación intencional es la generación de la llave (paso 5), que
@@ -96,7 +96,7 @@ gh ssh-key list
 no borra nada. Si quieres empezar de cero, mueve el directorio tú.
 
 **Después del clon.** A partir del paso 7 manda el instalador del repositorio
-principal; sus logs están en `~/.dotfiles-install-logs/` y su
+principal; sus logs están en `~/.dotfiles-logs/` y su
 [troubleshooting](https://github.com/alejakun/dotfiles/blob/master/docs/troubleshooting.md)
 aplica desde ahí.
 
@@ -105,14 +105,20 @@ aplica desde ahí.
 ## Estado de verificación
 
 Los pasos 4 y 6 —el scope `admin:public_key` y `gh ssh-key add` sin navegador—
-están confirmados **por documentación**, no por ejecución: no ha habido una Mac
-en blanco desde que se escribieron. Primera corrida real pendiente.
+están **comprobados en ejecución** el 2026-10-29, en la Mac actual: el token trae
+`admin:public_key`, la llave de esta Mac está registrada con el `ComputerName`
+como título (el formato del paso 6, 2026-09-18), y una llave ya registrada
+devuelve `rc=0`. Esa prueba encontró que la detección de "ya registrada" buscaba
+el fingerprint, que `gh ssh-key list` no imprime; se corrigió en las dos copias.
+
+Lo que sigue sin ejercitarse es una Mac **en blanco** (paso 2 instalando
+Homebrew y las Command Line Tools desde cero).
 
 ---
 
 ## Requisitos
 
-- macOS 11 (Big Sur) o posterior
+- macOS 13 (Ventura) o posterior: el mínimo que declara `dotfiles` (`docs/context.md`), que es quien toma el control en el paso 7
 - Conexión a internet
 - Permisos de administrador (Homebrew y las Command Line Tools los piden)
 
